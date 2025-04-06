@@ -1,0 +1,28 @@
+
+{% extends 'base.html' %}
+{% block content %}
+	<link rel="stylesheet" type="text/css" href="{% static 'ticket/posts.css' %}">
+	<div class="">
+		{% if message != None %}
+				<p class="message">{{ message }}</p>
+		{% else %}
+			{% for post in posts %}
+				{% if post.author == request.user %}
+					<div class="post">
+						<p class="author">Vous avez publié un post</p>
+						<p class="date-created">{{ ticket.time_created }}</p>
+						<div class="content">
+							<h2>{{ ticket.title }}</h2>
+							<p>{{ ticket.content }}</p>
+							<img src="{{ post.photo.image.url }}">
+						</div>
+						<div class="button">
+							<a href="" class="update"><button>Modifier</button></a>
+							<a href="" class="delete"><button>Supprimer</button></a>
+						</div>
+					</div>
+				{% endif %}
+			{% endfor %}
+		{% endif %}
+	</div>
+{% endblock %}
