@@ -20,6 +20,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 import authentication.views
 import ticket.views
+import review.views
 import follower.views
 
 urlpatterns = [
@@ -30,6 +31,7 @@ urlpatterns = [
     path('posts/', ticket.views.posts, name='posts'),
     path('signup/', authentication.views.signup_page, name='signup'),
     path('create-ticket/', ticket.views.create_ticket, name='create-ticket'),
+    path('create-ticket-review/', review.views.create_ticket_review, name='create-ticket-review'),
     path('follows/', follower.views.follows, name='follows'),
     path('unfollow/<int:link_id>/', follower.views.unfollow, name='unfollow'),
 ]

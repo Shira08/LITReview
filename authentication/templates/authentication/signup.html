@@ -1,10 +1,87 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h2>Inscription</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-    
-        <button type="submit">S’inscrirccce</button>
-    </form>
+    <div class="bg-gradient-to-br from-blue-50 via-white to-purple-50 min-h-screen flex items-center justify-center p-4">
+        <div class="w-full max-w-md">
+      
+      
+          <!-- Login Card -->
+          <div class="bg-white/80 backdrop-blur-lg rounded-2xl shadow-2xl p-8 space-y-8 transition-all duration-500 hover:shadow-xl">
+              <div class="text-center">
+                  <h2 class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">LITReview</h2>
+                  <p class="text-gray-500 mt-2">Veuillez vous inscrire</p>
+              </div>
+      
+              <form class="space-y-6" method="post">
+                {% csrf_token %} 
+                  <!-- Email Input -->
+                  <div class="relative">
+                      <label class="block text-gray-700 text-sm font-medium mb-2" for="username">
+                          Username
+                      </label>
+                      <div class="relative">
+                          <i data-lucide="mail" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"></i>
+                       {{ form.username }}
+                      </div>
+                  </div>
+      
+                  <!-- Password Input -->
+                  <div class="relative">
+                      <label class="block text-gray-700 text-sm font-medium mb-2" for="password">
+                          Password
+                      </label>
+                      <div class="relative">
+                          <i data-lucide="lock" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"></i>
+                          {{ form.password1 }}
+                      </div>
+                  </div>
+                  <div class="relative">
+                    <label class="block text-gray-700 text-sm font-medium mb-2" for="password">
+                       Confirm Password
+                    </label>
+                    <div class="relative">
+                        <i data-lucide="lock" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-1"></i>
+                        {{ form.password2 }}
+                    </div>
+                </div>
+                {% if form.errors %}
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4" role="alert">
+                    <strong class="font-bold">Erreurs :</strong>
+                    <ul class="mt-1 list-disc ml-5">
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <li>{{ field.label }} : {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                  <button 
+                      type="submit" 
+                      class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl hover:opacity-90 transition duration-200 transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
+                  >
+                      S'inscrire
+                  </button>
+      
+                  <!-- Divider -->
+                  <div class="relative">
+                      <div class="absolute inset-0 flex items-center">
+                          <div class="w-full border-t border-gray-200"></div>
+                      </div>
+                      <div class="relative flex justify-center text-sm">
+                          <span class="px-4 bg-white/80 text-gray-500">Ou </span>
+                      </div>
+                  </div>
+              </form>
+      
+              <!-- Sign Up Link -->
+              <p class="text-center text-sm text-gray-600">
+                  Vous avez un compte?
+                  <a href="/" class="text-blue-600 hover:text-blue-800 font-semibold transition-colors duration-200">Se connecter</a>
+              </p>
+          </div>
+      </div>
+        </div>
 {% endblock content %}
