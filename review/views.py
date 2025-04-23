@@ -28,7 +28,9 @@ def create_ticket_review(request):
             review.save()
             return redirect('flux')
         
-        context = {'ticket_form': ticket_form,
+    context = {
+               'ticket_form': ticket_form,
                'photo_form': photo_form, 
-               'review_form': review_form}
+               'review_form': review_form
+               }
     return render(request, 'review/create_review.html',context = context) 

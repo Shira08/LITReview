@@ -6,9 +6,8 @@ class PhotoForm(forms.ModelForm):
     class Meta:
         model = models.Photo
         fields = ['image',]
-    image = forms.CharField(
-        max_length=63,
-        widget=forms.FileField(attrs={
+    image = forms.ImageField(
+        widget=forms.ClearableFileInput(attrs={
             'class': 'w-full px-4 py-3 rounded-lg border border-gray-300  transition duration-150 ease-in-out',
             'placeholder':'Ajouter une image'
         })
