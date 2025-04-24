@@ -1,20 +1,68 @@
-
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
-	<link rel="stylesheet" type="text/css" href="{% static 'ticket/posts.css' %}">
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+    </script>
+</head>
+<body>
+    <nav class="flex flex-wrap items-center justify-between py-4 px-24 bg-white shadow-md">
+        <div class="flex items-center space-x-2">
+            <img 
+                src="https://cdn-icons-png.flaticon.com/128/3479/3479930.png" 
+                alt="Book icon" 
+                class="w-6 h-6 text-blue-600"
+            >
+            <span class="text-xl font-bold text-gray-800">LITReview</span>
+        </div>
+
+        <!-- Hamburger menu for mobile -->
+        <div class="md:hidden">
+            <button 
+                onclick="toggleMenu()" 
+                class="text-gray-600 hover:text-blue-600 focus:outline-none"
+            >
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Navigation links -->
+        <div class="hidden w-full md:flex md:w-auto md:space-x-4 md:block" id="mobile-menu">
+            <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4">
+                <a href="#" class="text-gray-600 hover:text-blue-600 block md:inline">Flux</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600 block md:inline">Posts</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600 block md:inline">Abonnements</a>
+                <a href="{% url 'logout' %}" class="text-gray-600 hover:text-blue-600 block md:inline">Se déconnecter</a>
+            </div>
+        </div>
+    </nav>
+
+ <div class="px-24 bg-gray-100">
+    <p class="text-3xl">Retrouvez vos posts ici</p>
 	<div class="">
 		{% if message != None %}
 				<p class="message">{{ message }}</p>
 		{% else %}
-			{% for post in posts %}
-				{% if post.author == request.user %}
+			{% for ticket in tickets %}
+				{% if ticket.author == request.user %}
 					<div class="post">
-						<p class="author">Vous avez publié un post</p>
+						<p class="author">Vous avez publié un ticket</p>
 						<p class="date-created">{{ ticket.time_created }}</p>
 						<div class="content">
 							<h2>{{ ticket.title }}</h2>
 							<p>{{ ticket.content }}</p>
-							<img src="{{ post.photo.image.url }}">
+							<img src="{{ ticket.photo.image.url }}">
 						</div>
 						<div class="button">
 							<a href="" class="update"><button>Modifier</button></a>
@@ -25,4 +73,43 @@
 			{% endfor %}
 		{% endif %}
 	</div>
-{% endblock %}
+    <div class="ticket-section flex flex-wrap justify-center gap-4 py-5 ">
+        <div class="bg-white shadow-md rounded-lg p-4 md:w-3/4 ">
+            <div class="md:flex justify-between items-center mb-4">    
+                <div class="md:flex items-center">
+                    <span class="text-yellow-500 mr-2">★★★★★</span>
+                    <h2 class="text-xl font-bold text-gray-800">véritablement révolutionnaire</h2>
+                </div>
+                <span class="text-gray-500 text-sm">13.14, 26 août 2020</span>
+            </div>
+    
+            <p class="text-gray-600 mb-4">Une excellente lecture et je vous recommande vivement !</p>
+    
+            <div class="md:flex items-center border rounded-lg p-4 bg-gray-50 space-x-4 w-100">
+                <img 
+                    src="https://www.vmtlib.michlibrary.org/library-books.jpg/@@images/image.jpeg" 
+                    alt="Book Cover" 
+                    class="w-60 h-auto rounded-lg shadow-md"
+                >
+                <div>
+                    <div class="mb-2">
+                        <span class="font-medium mr-2">Ticket:</span>
+                        <span class="text-gray-600">jean8597</span>
+                    </div>
+                    <div>
+                        <span class="font-medium mr-2">Livre:</span>
+                        <span class="text-gray-600">The Origin of Species - Charles Darwin</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+    </div>
+
+ </div>
+</body>
+</html>
+{% if user.is_authenticated %}
+    <p>Vous êtes connecté en tant que {{ request.user }}. <a href="{% url 'logout' %}">Se déconnecter</a></p>
+{% endif %}
+{% endblock content %}

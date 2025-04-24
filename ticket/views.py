@@ -1,8 +1,8 @@
-from django.shortcuts import render,redirect
-from ticket import forms
-from authentication import models
-from follower import models
-#from review.forms import ReviewForm
+from django.shortcuts import render, redirect
+from ticket import forms, models
+from authentication import models as auth_models
+from follower import models as follower_models
+from review.forms import ReviewForm
 from django.contrib.auth.decorators import login_required
 
 @login_required
@@ -50,8 +50,7 @@ def get_reviews(request, users):
     return reviews
 
 
-def get_tickets(request, users):
-    """we collect all the tickets of the users to whom we are subscribed"""
+def get_tickets(request):
     tickets = []
     for user in users:
         tickets_by_user = models.Ticket.objects.filter(author=user)
@@ -71,21 +70,7 @@ def sorted_posts(request, tickets, reviews):
 
 @login_required
 def posts(request):
-    users = get_users(request)
-    tickets = get_tickets(request, users)
-    reviews = get_reviews(request, users)
-    posts = sorted_posts(request, tickets, reviews)
-    message = "Vous n'avez pas encore de publications"
-    for post in posts:
-        try:
-            if post.user == request.user:
-                message = None
-        except Exception:
-            pass
-        try:
-            if post.author == request.user:
-                message = None
-        except Exception:
-            pass
-    context = {'posts': posts, 'message': message, 'page_name': 'Posts'}
+#    users = get_users(request)
+    tickets = models.Ticket.objects.filter(author=request.user)
+    context = {'tickets': tickets}
     return render(request, 'ticket/posts.html', context)
