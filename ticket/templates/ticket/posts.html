@@ -49,61 +49,55 @@
     </nav>
 
  <div class="px-24 bg-gray-100">
-    <p class="text-3xl">Retrouvez vos posts ici</p>
-	<div class="">
-		{% if message != None %}
+    <p class="text-3xl py-12 flex justify-center">Retrouvez vos posts ici</p>
+
+
+    <div class="ticket-section flex flex-wrap justify-center gap-4 py-5 ">
+        {% if message != None %}
 				<p class="message">{{ message }}</p>
 		{% else %}
-			{% for ticket in tickets %}
+        {% for ticket in tickets %}
 				{% if ticket.author == request.user %}
-					<div class="post">
-						<p class="author">Vous avez publié un ticket</p>
-						<p class="date-created">{{ ticket.time_created }}</p>
-						<div class="content">
-							<h2>{{ ticket.title }}</h2>
-							<p>{{ ticket.content }}</p>
-							<img src="{{ ticket.photo.image.url }}">
-						</div>
-						<div class="button">
-							<a href="" class="update"><button>Modifier</button></a>
-							<a href="" class="delete"><button>Supprimer</button></a>
-						</div>
-					</div>
-				{% endif %}
-			{% endfor %}
-		{% endif %}
-	</div>
-    <div class="ticket-section flex flex-wrap justify-center gap-4 py-5 ">
         <div class="bg-white shadow-md rounded-lg p-4 md:w-3/4 ">
+            <div class="flex justify-between">
+                <p class="author">Vous avez publié un ticket</p>
+                <span class="text-gray-500 text-sm">{{ ticket.date_created }}</span>
+
+            </div>
             <div class="md:flex justify-between items-center mb-4">    
                 <div class="md:flex items-center">
+                    <h2 class="text-xl font-bold text-gray-800">véritablement révolutionnaire - </h2>
                     <span class="text-yellow-500 mr-2">★★★★★</span>
-                    <h2 class="text-xl font-bold text-gray-800">véritablement révolutionnaire</h2>
                 </div>
-                <span class="text-gray-500 text-sm">13.14, 26 août 2020</span>
             </div>
     
-            <p class="text-gray-600 mb-4">Une excellente lecture et je vous recommande vivement !</p>
+            <p class="text-gray-600 mb-4 review_comment">Une excellente lecture et je vous recommande vivement !</p>
     
             <div class="md:flex items-center border rounded-lg p-4 bg-gray-50 space-x-4 w-100">
                 <img 
-                    src="https://www.vmtlib.michlibrary.org/library-books.jpg/@@images/image.jpeg" 
-                    alt="Book Cover" 
+                    src="{{ ticket.photo.image.url }}" 
+                    alt="Ticket image" 
                     class="w-60 h-auto rounded-lg shadow-md"
                 >
                 <div>
                     <div class="mb-2">
-                        <span class="font-medium mr-2">Ticket:</span>
-                        <span class="text-gray-600">jean8597</span>
+                        <span class="font-medium mr-2">Autheur du ticket:</span>
+                        <span class="text-gray-600">{{ ticket.author }}</span>
                     </div>
                     <div>
                         <span class="font-medium mr-2">Livre:</span>
-                        <span class="text-gray-600">The Origin of Species - Charles Darwin</span>
+                        <span class="text-gray-600">{{ ticket.title }}</span>
                     </div>
                 </div>
             </div>
+            <div class="button flex justify-end gap-3 py-2">
+                <a href="" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded"><button>Modifier</button></a>
+                <a href="" class="delete bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"><button>Supprimer</button></a>
+            </div>
         </div>
-    
+        {% endif %}
+        {% endfor %}
+    {% endif %}
     </div>
 
  </div>
