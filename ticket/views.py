@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from ticket import forms, models
 from authentication import models as auth_models
 from follower import models as follower_models
 from review.forms import ReviewForm
 from django.contrib.auth.decorators import login_required
+
 
 @login_required
 def home(request):
@@ -71,6 +72,54 @@ def sorted_posts(request, tickets, reviews):
 @login_required
 def posts(request):
 #    users = get_users(request)
-    tickets = models.Ticket.objects.filter(author=request.user)
+    tickets = models.Ticket.objects.filter(author=request.user,delete=False) 
     context = {'tickets': tickets}
     return render(request, 'ticket/posts.html', context)
+
+
+def delete(request, id):
+    ticket = ticket.objects.get(id=id)
+    return render(request,
+           'ticket/posts.html',{'band': band})
+
+
+
+"""def ticket_delete(request, id):
+    ticket = Ticket.objects.get(id=id) 
+    if request.method == 'POST':
+
+        ticket.delete()
+        return redirect('posts')
+
+    return render(request,
+                    'ticket/posts.html',
+                    {'ticket': ticket})"""
+def ticket_delete(request, id):
+    ticket = get_object_or_404(models.Ticket, id=id)
+
+    if request.method == 'POST':
+        ticket.delete = True  
+        ticket.save()
+        return redirect('posts')  
+
+    return render(request, 'ticket/confirm_delete.html', {'ticket': ticket})
+
+
+def ticket_update(request, id):
+    ticket = models.Ticket.objects.get(id=id)
+    form = TicketForm(instance=band) 
+    return render(request,'listings/band_update.html',{'form': form})
+
+def ticket_update(request, id):
+    ticket = models.Ticket.objects.get(id=id)
+    if request.method == 'POST':
+        form = TicketForm(request.POST, instance=ticket)
+        if form.is_valid():
+            form.save()
+            return redirect('posts')
+    else:
+        form = TicketForm(instance=ticket)
+
+    return render(request,
+                'ticket/ticket_update.html',
+                {'form': form})
