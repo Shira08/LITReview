@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+	<link rel="stylesheet" type="text/css" href="{% static 'ticket/update_ticket.css' %}">
+	<div class="container">
+		<h2>Update ticket</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+        
+            <!-- Champs du ticket -->
+            <label for="id_title">Title:</label>
+            {{ ticket_form.title }}
+        
+            <label for="id_description">Content:</label>
+            {{ ticket_form.content }}
+        
+            <!-- Ancienne image -->
+            {% if photo_form.instance.image %}
+                <p>Image actuelle : <br>
+                <img src="{{ photo_form.instance.image.url }}" alt="Ancienne image" style="max-width: 200px;"></p>
+            {% endif %}
+        
+            <!-- Nouveau champ image -->
+            <label for="id_image">Changer l'image :</label>
+            {{ photo_form.image }}
+        
+            <input type="submit" value="Valider">
+        </form>
+        
+	</div>
+{% endblock %}

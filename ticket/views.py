@@ -112,14 +112,38 @@ def ticket_update(request, id):
 
 def ticket_update(request, id):
     ticket = models.Ticket.objects.get(id=id)
+    ticket_form = forms.TicketForm(instance=ticket)
+    photo_form = forms.PhotoForm(instance=ticket.photo)
     if request.method == 'POST':
         form = TicketForm(request.POST, instance=ticket)
         if form.is_valid():
             form.save()
-            return redirect('posts')
+            return redirect('posts')  # Redirects to the posts page after saving
     else:
         form = TicketForm(instance=ticket)
-
+    
     return render(request,
-                'ticket/ticket_update.html',
-                {'form': form})
+
+                'ticket/posts.html',
+                {'form': form, 'message': None})
+
+@login_required
+def update_ticket(request, ticket_id):
+    ticket = models.Ticket.objects.get(id=ticket_id)
+    ticket_form = forms.TicketForm(instance=ticket)
+    photo_form = forms.PhotoForm(instance=ticket.photo)
+    if request.method == 'POST':
+        ticket_form = forms.TicketForm(request.POST, instance=ticket)
+        photo_form = forms.PhotoForm(request.POST, request.FILES, instance=ticket.photo)
+        if all([ticket_form.is_valid(), photo_form.is_valid()]):
+            photo = photo_form.save(commit=False)
+            photo.uploader = request.user
+            photo.save()
+            ticket = ticket_form.save(commit=False)
+            ticket.author = request.user
+            ticket.photo = photo
+            ticket.save()
+            return redirect('posts')
+    context = {'ticket_form': ticket_form, 'photo_form': photo_form,
+               'page_name': 'Ticket update'}
+    return render(request, 'ticket/update_ticket.html', context)

@@ -51,19 +51,7 @@
  <div class="px-24 bg-gray-100">
     <p class="text-3xl py-12 flex justify-center">Retrouvez vos posts ici</p>
 
-    <button onclick="modal.showModal()" class="px-6 py-3 text-white bg-blue-600 rounded-lg shadow-lg hover:bg-blue-700 transition">
-        Open Modal
-      </button>
-    
-      <!-- Modal -->
-      <dialog onclick="modal.close()" id="modal" class="p-6 bg-white rounded-lg shadow-lg w-[400px] ">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-xl font-bold">Modal Title</h2>
-          <button onclick="modal.close()" class="text-gray-600 hover:text-gray-900 text-2xl">&times;</button>
-        </div>
-        <div>
-    Lorem Ipsum is simply dummy text of the printing and typeset ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was populari
-      </dialog>
+   
     <div class="ticket-section flex flex-wrap justify-center gap-4 py-5 ">
         {% if message != None %}
 				<p class="message">{{ message }}</p>
@@ -102,8 +90,7 @@
                     </div>
                 </div>
             </div>
-            <div class="button flex justify-end gap-3 py-2">
-                <a href="" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded"><button>Modifier</button></a>
+            <a href="{% url 'ticket_update' ticket.id %}" class="update"><button>Modifier</button></a>
                 <form method="POST" action="{% url 'ticket_delete' ticket.id %}">
                     {% csrf_token %}
                     <button class="delete bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"  type="submit">Supprimer</button>
