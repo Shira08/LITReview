@@ -100,13 +100,55 @@
                 </div>
             </div>
         </div>
-    
+        {% for post in posts %}
+        
+        {% if post.reviews.all %}
+        <ul>
+            {% for review in post.reviews.all %}
+            <li>
+        <div class="md:flex justify-between items-center mb-4">    
+            <div class="md:flex items-center">
+                <h2 class="text-xl font-bold text-gray-800">  <strong>{{ review.user.username }}</strong> - Note : {{ review.rating }}</h2>
+                <span class="text-yellow-500 mr-2">★★★★★</span>
+            </div>
+            <span class="text-gray-500 text-sm">{{ review.time_created|date:"l j F Y H:i" }}</span>
+
+            </span>
+        </div>
+
+        <p class="text-gray-600 mb-4">{{review.headline}}</p>
+    </li>
+        {% endfor %}
+    </ul>
+        {% else %}
+        <p>Aucun avis pour ce ticket. btn pour demander une critiq</p>
+        {%endif%}
+        <div class="md:flex items-center border rounded-lg p-4 bg-gray-50 space-x-4 w-100">
+            <img 
+                src="https://www.vmtlib.michlibrary.org/library-books.jpg/@@images/image.jpeg" 
+                alt="Book Cover" 
+                class="w-60 h-auto rounded-lg shadow-md"
+            >
+            <div>
+                <div class="mb-2">
+                    <span class="font-medium mr-2">Autheur:</span>
+                    <span class="text-gray-600">{{post.author}}</span>
+                </div>
+                <div>
+                    <span class="font-medium mr-2">Titre ticket:</span>
+                    <span class="text-gray-600">{{post.title}}</span>
+                </div>
+                <div>
+                    <span class="font-medium mr-2">Commentaire:</span>
+                    <span class="text-gray-600">{{post.content}}</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
     </div>
 
  </div>
 </body>
 </html>
-{% if user.is_authenticated %}
-    <p>Vous êtes connecté en tant que {{ request.user }}. <a href="{% url 'logout' %}">Se déconnecter</a></p>
-{% endif %}
+
 {% endblock content %}

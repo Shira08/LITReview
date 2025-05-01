@@ -1,9 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from ticket import forms, models
+from ticket import  forms as ticket_forms, models
+from review import forms, models
 from authentication import models as auth_models
 from follower import models as follower_models
 from review.forms import ReviewForm
 from django.contrib.auth.decorators import login_required
+from itertools import chain
+from django.db.models import CharField, Value
+from django.shortcuts import render
+from django.db.models import Q
+
 
 
 @login_required
@@ -12,11 +18,11 @@ def home(request):
 
 @login_required
 def create_ticket(request):
-    ticket_form = forms.TicketForm()
-    photo_form = forms.PhotoForm()
+    ticket_form = ticket_forms.TicketForm()
+    photo_form = ticket_forms.PhotoForm()
     if request.method == 'POST':
-        ticket_form = forms.TicketForm(request.POST)
-        photo_form = forms.PhotoForm(request.POST, request.FILES)
+        ticket_form = ticket_forms.TicketForm(request.POST)
+        photo_form = ticket_forms.PhotoForm(request.POST, request.FILES)
         if all([ticket_form.is_valid(), photo_form.is_valid()]):
             photo = photo_form.save(commit=False)
             photo.uploader = request.user
@@ -31,43 +37,40 @@ def create_ticket(request):
                'page_name': 'Créer un ticket'}
     return render(request, 'ticket/create_ticket.html', context=context)
 
-def get_users(request):
-    """We collect all the users to whom the user is subscribed"""
-    users = []
-    users_follows = models.UserFollows.objects.filter(user=request.user)
-    for user in users_follows:
-        users.append(user.followed_user)
-    users.append(request.user)
-    return users
-
-def get_reviews(request, users):
-    """we collect all the reveiws of the users to whom we are subscribed"""
-    reviews = []
-    for user in users:
-        review_by_user = models.Review.objects.filter(user=user).order_by('-time_created')
-        for review in review_by_user:
-            reviews.append(review)
-    reviews = sorted(reviews, key=lambda k: k.time_created, reverse=True)
-    return reviews
+def get_users_viewable_tickets(user):
+    followed_users = user.following.all().values_list('followed_user', flat=True)
+    return models.Ticket.objects.filter(
+        Q(author__in=followed_users) | Q(author=user)
+    )
 
 
-def get_tickets(request):
-    tickets = []
-    for user in users:
-        tickets_by_user = models.Ticket.objects.filter(author=user)
-        for ticket in tickets_by_user:
-            tickets.append(ticket)
-    tickets = sorted(tickets, key=lambda k: k.time_created, reverse=True)
-    return tickets
+def get_users_viewable_reviews(user):
+    followed_users = user.following.all().values_list('followed_user', flat=True)
 
-def sorted_posts(request, tickets, reviews):
-    posts = []
-    for ticket in tickets:
-        posts.append(ticket)
-    for review in reviews:
-        posts.append(review)
-    posts = sorted(posts, key=lambda k: k.time_created, reverse=True)
-    return posts
+    # billets que j'ai créés
+    my_tickets = models.Ticket.objects.filter(author=user)
+
+    return models.Review.objects.filter(
+        Q(user=user) |
+        Q(user__in=followed_users) |
+        Q(ticket__in=my_tickets)
+    )
+
+
+@login_required
+def feed(request): 
+    user = request.user
+
+    tickets = get_users_viewable_tickets(user)
+    tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
+
+    posts = sorted(
+        tickets,
+        key=lambda post: post.time_created,
+        reverse=True
+    )
+
+    return render(request, 'ticket/flux.html', context={'posts': posts})
 
 @login_required
 def posts(request):
@@ -77,23 +80,6 @@ def posts(request):
     return render(request, 'ticket/posts.html', context)
 
 
-def delete(request, id):
-    ticket = ticket.objects.get(id=id)
-    return render(request,
-           'ticket/posts.html',{'band': band})
-
-
-
-"""def ticket_delete(request, id):
-    ticket = Ticket.objects.get(id=id) 
-    if request.method == 'POST':
-
-        ticket.delete()
-        return redirect('posts')
-
-    return render(request,
-                    'ticket/posts.html',
-                    {'ticket': ticket})"""
 def ticket_delete(request, id):
     ticket = get_object_or_404(models.Ticket, id=id)
 
@@ -104,28 +90,6 @@ def ticket_delete(request, id):
 
     return render(request, 'ticket/confirm_delete.html', {'ticket': ticket})
 
-
-def ticket_update(request, id):
-    ticket = models.Ticket.objects.get(id=id)
-    form = TicketForm(instance=band) 
-    return render(request,'listings/band_update.html',{'form': form})
-
-def ticket_update(request, id):
-    ticket = models.Ticket.objects.get(id=id)
-    ticket_form = forms.TicketForm(instance=ticket)
-    photo_form = forms.PhotoForm(instance=ticket.photo)
-    if request.method == 'POST':
-        form = TicketForm(request.POST, instance=ticket)
-        if form.is_valid():
-            form.save()
-            return redirect('posts')  # Redirects to the posts page after saving
-    else:
-        form = TicketForm(instance=ticket)
-    
-    return render(request,
-
-                'ticket/posts.html',
-                {'form': form, 'message': None})
 
 @login_required
 def update_ticket(request, ticket_id):

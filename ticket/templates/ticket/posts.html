@@ -77,9 +77,9 @@
                 <img 
                     src="{{ ticket.photo.image.url }}" 
                     alt="Ticket image" 
-                    class="w-60 h-auto rounded-lg shadow-md"
+                    class="w-48 h-auto rounded-lg shadow-md"
                 >
-                <div>
+                <div class="">
                     <div class="mb-2">
                         <span class="font-medium mr-2">Autheur du ticket:</span>
                         <span class="text-gray-600">{{ ticket.author }}</span>
@@ -88,13 +88,19 @@
                         <span class="font-medium mr-2">Livre:</span>
                         <span class="text-gray-600">{{ ticket.title }}</span>
                     </div>
+                    <div>
+                        <span class="font-medium mr-2">Commentaire d'autheur</span>
+                        <span class="text-gray-600">{{ ticket.content }}</span>
+                    </div>
                 </div>
             </div>
-            <a href="{% url 'ticket_update' ticket.id %}" class="update"><button>Modifier</button></a>
-                <form method="POST" action="{% url 'ticket_delete' ticket.id %}">
-                    {% csrf_token %}
-                    <button class="delete bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"  type="submit">Supprimer</button>
-                </form>
+          <div class="buttons flex justify-end gap-4 py-2">
+            <a href="{% url 'ticket_update' ticket.id %}" class="update "><button class="bg-blue-400 text-white font-bold py-2 px-4 rounded">Modifier</button></a>
+            <form method="POST" action="{% url 'ticket_delete' ticket.id %}">
+                {% csrf_token %}
+                <button class="delete bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"  type="submit">Supprimer</button>
+            </form>
+          </div>
                
             </div>
         </div>
