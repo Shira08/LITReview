@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}Review{% endblock %}
+{% load static %}
+{% block content %}
+
+  <div class="px-24 bg-gray-100">
+
+    <div class="container mx-auto px-4 py-12 max-w-3xl">
+      <div class="bg-white rounded-2xl shadow-lg p-6 md:p-10">
+        <div class="mb-8">
+          <h2 class="text-2xl font-bold text-gray-800 flex justify-center">Créer une critique</h2>
+        </div>
+
+        <form class="" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+            <div class="md:col-span-2 border-2 border-gray-200 p-4 rounded">
+            <p class="text-1xl font-bold my-3">Vous donnez votre avis sur le ticket:</p>
+              <!-- Titre du ticket -->
+              <div class="md:col-span-2">
+               <p>{{ticket.title}}</p>
+               <p> {{ticket.content}}</p>
+               <img src="{{ticket.photo.image.url}}" alt="">
+              </div>
+            </div>
+            <div class="md:col-span-2 border-2 border-gray-200 p-4 rounded">
+              <p class="text-1xl font-bold my-3">Détails de la critique</p>
+
+              <!-- Titre Critique -->
+              <div class="md:col-span-2">
+                <label for="phone" class="block text-sm font-medium text-gray-700  my-3">Titre de la critique</label>
+                {{review_form.headline}}
+              </div>
+              <label for="rating" class="block text-sm font-medium text-gray-700 my-3">Note </label>
+              {{ review_form.rating }}
+
+              <!-- Commentaire critique -->
+              <div class="md:col-span-2">
+                <label for="Commentaire" class="block text-sm font-medium text-gray-700  my-3">Commentaire</label>
+                {{review_form.body}}
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Submit Button -->
+          <div class="mt-8">
+            <button type="submit"
+              class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-4 rounded-lg transition duration-150 ease-in-out shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+              Créer une critique
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,5 +1,6 @@
-from django.shortcuts import render,redirect
-from ticket import forms
+from django.shortcuts import render,redirect,get_object_or_404
+from ticket import forms,models
+from review import models
 from review.forms import ReviewForm
 from django.contrib.auth.decorators import login_required
 
@@ -34,3 +35,53 @@ def create_ticket_review(request):
                'review_form': review_form
                }
     return render(request, 'review/create_review.html',context = context) 
+
+
+@login_required
+def create_review_response(request,id):
+    ticket = get_object_or_404(models.Ticket, id=id)
+    review_form = ReviewForm(request.POST)
+    if request.method == 'POST':
+        review_form = ReviewForm(request.POST)
+        if review_form.is_valid():
+            review = review_form.save(commit=False)
+            review.user = request.user
+            review.ticket = ticket
+            review.save()
+            return redirect('flux')
+        
+    context = {
+               'ticket' : ticket,
+               'review_form': review_form,
+               'user': request.user
+               }
+    return render(request, 'review/create_review_response.html',context = context) 
+
+@login_required
+def create_review_response(request,id,review_id):
+    ticket = get_object_or_404(models.Ticket, id=id)
+    review_form = ReviewForm(instance=ticket)
+    if request.method == 'POST':
+        review_form = ReviewForm(request.POST,instance=ticket)
+        if review_form.is_valid():
+            review = review_form.save(commit=False)
+            review.user = request.user
+            review.ticket = ticket
+            review.save()
+            return redirect('flux')
+        
+    context = {
+               'ticket' : ticket,
+               'review_form': review_form,
+               }
+    return render(request, 'review/create_review_response.html',context = context) 
+
+@login_required
+def review_delete(request, id):
+    review = get_object_or_404(models.Review, id=id)
+
+    if request.method == "POST":
+        review.delete()
+        return redirect('flux') 
+
+    return render(request, 'ticket/flux.html', {'review': review})
