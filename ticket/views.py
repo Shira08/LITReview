@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from ticket import  forms as ticket_forms, models
+from ticket import  forms as TicketForm, models
 from review import forms, models
 from authentication import models as auth_models
 from follower import models as follower_models
@@ -18,11 +18,11 @@ def home(request):
 
 @login_required
 def create_ticket(request):
-    ticket_form = ticket_forms.TicketForm()
-    photo_form = ticket_forms.PhotoForm()
+    ticket_form = TicketForm.TicketForm()
+    photo_form = TicketForm.PhotoForm()
     if request.method == 'POST':
-        ticket_form = ticket_forms.TicketForm(request.POST)
-        photo_form = ticket_forms.PhotoForm(request.POST, request.FILES)
+        ticket_form = TicketForm.TicketForm(request.POST)
+        photo_form = TicketForm.PhotoForm(request.POST, request.FILES)
         if all([ticket_form.is_valid(), photo_form.is_valid()]):
             photo = photo_form.save(commit=False)
             photo.uploader = request.user
@@ -94,11 +94,11 @@ def ticket_delete(request, id):
 @login_required
 def update_ticket(request, ticket_id):
     ticket = models.Ticket.objects.get(id=ticket_id)
-    ticket_form = forms.TicketForm(instance=ticket)
-    photo_form = forms.PhotoForm(instance=ticket.photo)
+    ticket_form = TicketForm.TicketForm(instance=ticket)
+    photo_form = TicketForm.PhotoForm(instance=ticket.photo)
     if request.method == 'POST':
-        ticket_form = forms.TicketForm(request.POST, instance=ticket)
-        photo_form = forms.PhotoForm(request.POST, request.FILES, instance=ticket.photo)
+        ticket_form = TicketForm.TicketForm(request.POST, instance=ticket)
+        photo_form = TicketForm .PhotoForm(request.POST, request.FILES, instance=ticket.photo)
         if all([ticket_form.is_valid(), photo_form.is_valid()]):
             photo = photo_form.save(commit=False)
             photo.uploader = request.user
