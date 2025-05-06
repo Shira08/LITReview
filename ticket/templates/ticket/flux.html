@@ -35,8 +35,17 @@
                 <div class="md:flex justify-between items-center mb-2">    
                     <div class="md:flex items-center">
                         <span class="text-1xl font-bold mr-2 uppercase">{{ review.user.username }} &nbsp;-</span>
-                        <span class="text-yellow-500 mr-2">{{ review.rating }}★★★★★</span>
+                        <span class="text-yellow-500 mr-2 text-2xl">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= review.rating %}
+                                    ★
+                                {% else %}
+                                    <span class="text-gray-300">★</span>
+                                {% endif %}
+                            {% endfor %}
+                        </span>
                     </div>
+                    
     
                     <span class="text-gray-500 text-sm">{{ review.time_created|date:"l j F Y H:i" }}</span>
                 </div>
