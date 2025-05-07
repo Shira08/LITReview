@@ -20,7 +20,7 @@
         <button class="px-6 py-3 w-64 rounded shadow text-white bg-blue-500 transition duration-300">
             Demander une critique
         </button>
-        <a href="{%url 'create-ticket-review'%}"> <button class="px-6 py-3 w-64 rounded text-white bg-black">
+        <a href="{%url 'create-ticket-review' %}"> <button class="px-6 py-3 w-64 rounded text-white bg-black">
             Créer une critique
         </button></a>
     </div>
@@ -56,8 +56,13 @@
                     </div>
                     {% if review.user == user%}
                     <div class="part2 my-2">
-                        <a  class="update"><button class="text-blue-600 underline underline-offset-2 font-medium rounded mr-3 text-underline">Modifier critique</button></a>
-                        <a  class="update"><button class="text-gray-600  font-medium underline underline-offset-2 rounded">Supprimer critique</button></a>
+                        <a  class="update" href="{% url 'update-review' post.id review.id %}"><button class="text-blue-600 underline underline-offset-2 font-medium rounded mr-3 text-underline">Modifier critique</button></a>
+                        <form method="POST" action="{% url 'review_delete' post.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="text-gray-600 font-medium underline underline-offset-2 rounded">
+                              Supprimer critique
+                            </button>
+                          </form>
                     </div>
                     {%endif%}
                     
@@ -91,5 +96,5 @@
             </div>
         </div>
         {% endfor %}
-
+    </div>
 {% endblock content %}

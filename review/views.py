@@ -58,23 +58,28 @@ def create_review_response(request,id):
     return render(request, 'review/create_review_response.html',context = context) 
 
 @login_required
-def create_review_response(request,id,review_id):
+def update_review_response(request, id, review_id):
     ticket = get_object_or_404(models.Ticket, id=id)
-    review_form = ReviewForm(instance=ticket)
+    review = get_object_or_404(models.Review, id=review_id)
+
     if request.method == 'POST':
-        review_form = ReviewForm(request.POST,instance=ticket)
+        review_form = ReviewForm(request.POST, instance=review)
         if review_form.is_valid():
-            review = review_form.save(commit=False)
-            review.user = request.user
-            review.ticket = ticket
-            review.save()
+            updated_review = review_form.save(commit=False)
+            updated_review.user = request.user
+            updated_review.ticket = ticket
+            updated_review.save()
             return redirect('flux')
-        
+    else:
+        review_form = ReviewForm(instance=review)
+
     context = {
-               'ticket' : ticket,
-               'review_form': review_form,
-               }
-    return render(request, 'review/create_review_response.html',context = context) 
+        'ticket': ticket,
+        'review_form': review_form,
+        'review': review,
+    }
+    return render(request, 'review/create_review_response.html', context)
+
 
 @login_required
 def review_delete(request, id):
